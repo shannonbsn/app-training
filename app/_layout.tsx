@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import { SessionProvider } from "../SessionContext";
 
 export default function Layout() {
   return (
