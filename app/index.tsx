@@ -6,6 +6,8 @@ type Exercise = {
   id: string;
   name: string;
   duration: string;
+  repetitions: string;
+  pause: string;
 };
 
 export default function HomeScreen() {
@@ -13,20 +15,54 @@ export default function HomeScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
+  const [repetitions, setRepetitions] = useState('');
+  const [pause, setPause] = useState('');
 
   const addExercise = () => {
-    if (name && duration) {
-      setExercises([...exercises, { id: Date.now().toString(), name, duration }]);
+    if (name && duration && repetitions && pause) {
+      setExercises([
+        ...exercises,
+        { id: Date.now().toString(), name, duration, repetitions, pause }
+      ]);
       setName('');
       setDuration('');
+      setRepetitions('');
+      setPause('');
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajoute un exercice</Text>
-      <TextInput placeholder="Nom de l'exercice" value={name} onChangeText={setName} style={styles.input} />
-      <TextInput placeholder="Durée (s)" value={duration} onChangeText={setDuration} keyboardType="numeric" style={styles.input} />
+
+      <TextInput
+        placeholder="Nom de l'exercice"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Durée (s)"
+        value={duration}
+        onChangeText={setDuration}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Nombre de répétitions"
+        value={repetitions}
+        onChangeText={setRepetitions}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Pause entre répétitions (s)"
+        value={pause}
+        onChangeText={setPause}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+
       <Button title="Ajouter" onPress={addExercise} />
 
       <FlatList
@@ -34,10 +70,18 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => router.push(`/timer?name=${encodeURIComponent(item.name)}&duration=${encodeURIComponent(item.duration)}`)}
+            onPress={() => router.push({
+              pathname: "/timer",
+              params: {
+                name: item.name,
+                duration: item.duration,
+                repetitions: item.repetitions,
+                pause: item.pause
+              }
+            })}
             style={styles.item}
           >
-            <Text>{item.name} - {item.duration}s</Text>
+            <Text>{item.name} - {item.duration}s x {item.repetitions} (pause : {item.pause}s)</Text>
           </TouchableOpacity>
         )}
       />
